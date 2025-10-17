@@ -10,30 +10,64 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const username = loginForm.username.value;
             const password = loginForm.password.value;
+            
+            // 1. CRITICAL STEP: Clear any previous error message
+            loginError.textContent = ''; 
+            loginError.style.display = 'none'; // Ensure it's hidden initially or cleared
 
-            /*
-            ===================================================================
-            !!! SECURITY WARNING: CLIENT-SIDE LOGIN BELOW !!!
-            ===================================================================
+            // The hardcoded credentials are: username='admin', password='12345'
             
-            NEVER use this method for production. A real admin panel MUST
-            send the username/password to a secure server endpoint (via POST
-            request/fetch API) that hashes the password and verifies credentials 
-            in a database. The server should then return a JWT token or session 
-            cookie, which is the ONLY way to authenticate securely.
-            */
-            
-            // Current hardcoded check (for local development ONLY):
             if (username === 'admin' && password === '12345') {
-                console.log("Login Success! Redirecting..."); 
+                console.log("Login Success! Redirecting to dashboard.html..."); 
                 
-                // Store a flag for simple client-side redirection check
                 localStorage.setItem('isAuthenticated', 'true');
                 
                 // Redirect to the dashboard
                 window.location.href = 'dashboard.html';
                 
             } else {
+                // 2. THIS IS THE NEW ERROR DISPLAY BLOCK
+                console.log("Login Failed: Incorrect Credentials.");
+                
+                loginError.textContent = 'ERROR: Invalid username or password. Please try again.';
+                loginError.style.display = 'block'; // Make sure the error message is visible
+                
+                loginForm.password.value = ''; // Clear password field for security
+            }
+        });
+    }
+
+
+    // --- Dashboard and Navigation Logic (remaining code is unchanged) ---
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // 1. Check Authentication on Dashboard Load
+    if (document.querySelector('.admin-wrapper')) {
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = 'index.html';
+        }
+    }
+    
+    // 2. Logout functionality
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'index.html';
+        });
+    }
+
+    // 3. Simple Nav Item Highlighting
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // e.preventDefault(); 
+            navItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            console.log(`Mapsd to: ${item.querySelector('a').textContent.trim()}`);
+        });
+    });
+});
                 console.log("Login Failed.");
                 loginError.textContent = 'Invalid username or password.';
                 loginForm.password.value = '';
