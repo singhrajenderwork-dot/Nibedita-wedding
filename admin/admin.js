@@ -1,39 +1,55 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    // --- Selectors ---
+    
     const loginForm = document.getElementById('loginForm');
     const loginError = document.getElementById('loginError');
-    const adminWrapper = document.querySelector('.admin-wrapper'); // Dashboard container
-    const logoutBtn = document.getElementById('logoutBtn');
 
-    // --- A. LOGIN PAGE LOGIC (Runs on index.html) ---
+    // --- A. LOGIN PAGE LOGIC ---
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
+            
             const username = loginForm.username.value;
             const password = loginForm.password.value;
-
-            // Clear previous error message
+            
+            // Clear previous error
             loginError.textContent = '';
             loginError.style.display = 'none';
 
-            // Hardcoded check (for local development ONLY):
+            // Hardcoded check: admin / 12345
             if (username === 'admin' && password === '12345') {
-
+                
+                // Set flag and redirect (using './' for safety)
                 localStorage.setItem('isAuthenticated', 'true');
-
-                // *** FIX: Use './' for reliable relative path redirect ***
                 window.location.href = './dashboard.html';
-
+                
             } else {
-
-                // Display the error message
-                loginError.textContent = 'ERROR: Invalid username or password. Please try again.';
-                loginError.style.display = 'block';
-
-                loginForm.password.value = ''; // Clear password
+                
+                // Display error
+                loginError.textContent = 'ERROR: Invalid username or password.';
+                loginError.style.display = 'block'; 
+                loginForm.password.value = '';
             }
+        });
+    }
+
+
+    // --- B. AUTH CHECK ON DASHBOARD ---
+    if (document.querySelector('.admin-wrapper')) {
+        // Redirect to login if not authenticated
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = './index.html';
+        }
+        
+        // Basic Logout
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('isAuthenticated');
+                window.location.href = './index.html';
+            });
+        }
+    }
+});
         });
     }
 
