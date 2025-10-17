@@ -1,61 +1,130 @@
-// Wait for the DOM to be fully loaded
-document.addEventListener("DOMContentLoaded", () => {
+/**
+ * File: admin/admin.js
+ * Description: Contains the JavaScript logic for the admin login and dashboard functionality.
+ */
 
-    // --- Hardcoded Login Credentials ---
-    // In a real application, this would be checked on a server.
-    const CORRECT_USER = "admin";
-    const CORRECT_PASS = "wedding123";
+// --- Login Page Logic (index.html) ---
 
-    /**
-     * This script runs on BOTH admin pages (index.html and dashboard.html).
-     * We need to find out which page we're on.
-     */
+// Hardcoded credentials for the sample project
+const USER = "admin";
+const PASS = "wedding123";
+
+const loginForm = document.getElementById('login-form');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const errorMsg = document.getElementById('login-error');
+
+// Check if the login form element exists before adding the event listener
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        // Prevent the default form submission (which reloads the page)
+        e.preventDefault();
+
+        const enteredUsername = usernameInput.value.trim();
+        const enteredPassword = passwordInput.value.trim();
+
+        // Check credentials
+        if (enteredUsername === USER && enteredPassword === PASS) {
+            // Successful login!
+            errorMsg.textContent = ''; // Clear any previous error
+            
+            // 1. Set a flag in session storage to remember the user is logged in
+            sessionStorage.setItem('loggedIn', 'true');
+
+            // 2. Redirect to the dashboard page
+            window.location.href = 'dashboard.html';
+        } else {
+            // Failed login
+            errorMsg.textContent = 'Invalid Username or Password.';
+            errorMsg.style.color = 'red'; // Make the error stand out
+            
+            // Clear the password field for security
+            passwordInput.value = '';
+        }
+    });
+}
+
+
+// --- Dashboard Page Logic (dashboard.html) will be added below the login function ---
+// NOTE: For a real project, it's best to split these into separate files, 
+// but for this simple setup, we'll keep the logic in one file.
+
+/**
+ * AUTH GUARD: Check if the user is logged in on dashboard.html load.
+ * This function will only run if the current page is dashboard.html
+ */
+function checkAuthAndLoadDashboard() {
+    // Check if the dashboard-specific container exists
+    const rsvpContainer = document.getElementById('rsvp-container');
     
-    const loginForm = document.getElementById("login-form");
-    const dashboardContainer = document.getElementById("rsvp-container");
-
-    // --- LOGIC FOR LOGIN PAGE (index.html) ---
-    if (loginForm) {
-        
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault(); // Stop form from submitting
-
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const errorMsg = document.getElementById("login-error");
-
-            // Check if username and password are correct
-            if (username === CORRECT_USER && password === CORRECT_PASS) {
-                // Login is successful!
-                // We use sessionStorage: data is stored only for this session
-                // and is deleted when the browser tab is closed.
-                sessionStorage.setItem("loggedIn", "true");
-
-                // Redirect to the dashboard
-                window.location.href = "dashboard.html";
-
-            } else {
-                // Show an error message
-                errorMsg.textContent = "Invalid username or password.";
-            }
-        });
-    }
-
-    // --- LOGIC FOR DASHBOARD PAGE (dashboard.html) ---
-    if (dashboardContainer) {
-
-        // 1. Auth Guard: Check if user is logged in
-        if (sessionStorage.getItem("loggedIn") !== "true") {
-            // If not logged in, kick them back to the login page
-            window.location.href = "index.html";
+    if (rsvpContainer) {
+        // Check session storage for the 'loggedIn' flag
+        if (sessionStorage.getItem('loggedIn') !== 'true') {
+            // If not logged in, redirect them back to the login page
+            window.location.href = 'index.html';
+            return; // Stop execution
         }
 
-        // 2. Logout Button
-        const logoutButton = document.getElementById("logout-btn");
-        logoutButton.addEventListener("click", () => {
-            // Remove the login token
-            sessionStorage.removeItem("loggedIn");
-            // Redirect to login page
+        // --- User is Logged In: Load Data ---
+
+        // 1. Get the RSVP data from localStorage
+        const rsvpData = localStorage.getItem('weddingRSVPs');
+        let rsvps = rsvpData ? JSON.parse(rsvpData) : [];
+
+        // 2. Check if there are any RSVPs
+        if (rsvps.length === 0) {
+            rsvpContainer.innerHTML = '<p class="no-data">No RSVPs have been submitted yet.</p>';
+            return;
+        }
+
+        // 3. Dynamically create the table
+        let tableHTML = '<table>';
+        tableHTML += '<thead><tr><th>Name</th><th>Email</th><th>Attending</th><th>Guests</th><th>Song Request</th></tr></thead>';
+        tableHTML += '<tbody>';
+
+        rsvps.forEach(rsvp => {
+            // Sanitize attendance value for display
+            const attendingStatus = rsvp.attending.includes('Yes') ? '✅ Yes' : '❌ No';
+            
+            tableHTML += `
+                <tr>
+                    <td>${rsvp.fullName}</td>
+                    <td>${rsvp.email}</td>
+                    <td>${attendingStatus}</td>
+                    <td>${rsvp.guests}</td>
+                    <td>${rsvp.songRequest}</td>
+                </tr>
+            `;
+        });
+
+        tableHTML += '</tbody></table>';
+        
+        // 4. Insert the table into the container
+        rsvpContainer.innerHTML = tableHTML;
+    }
+}
+
+/**
+ * LOGOUT LOGIC
+ */
+function handleLogout() {
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            // Clear the login flag
+            sessionStorage.removeItem('loggedIn');
+            // Redirect back to the login page
+            window.location.href = 'index.html';
+        });
+    }
+}
+
+
+// Initialize the dashboard logic if we are on the dashboard page
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuthAndLoadDashboard();
+    handleLogout();
+});
             window.location.href = "index.html";
         });
 
