@@ -1,0 +1,158 @@
+/* Using the same color palette for consistency */
+:root {
+    --primary-blue: #0A2463;
+    --secondary-gold: #FFD700;
+    --accent-cream: #FFF8E1;
+    --text-dark: #333333;
+    --text-light: #FFF8E1;
+    --font-body: 'Montserrat', sans-serif;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: #f4f7f6;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.admin-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+/* 1. Login Page Styles (admin/index.html) */
+.admin-form {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2.5rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.admin-form h2 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3rem;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    box-sizing: border-box; /* Important for 100% width */
+}
+
+.admin-btn {
+    display: inline-block;
+    background-color: var(--primary-blue);
+    color: var(--text-light);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.admin-btn:hover {
+    background-color: #081e4f;
+    color: var(--secondary-gold);
+}
+
+.admin-btn.secondary {
+    background-color: #aaa;
+    width: auto;
+}
+.admin-btn.secondary:hover {
+    background-color: #888;
+    color: var(--text-light);
+}
+
+.error-msg {
+    color: #d9534f;
+    font-weight: 600;
+    margin-top: 1rem;
+    height: 1.2em; /* Reserve space to prevent layout jump */
+}
+
+/* 2. Dashboard Page Styles (admin/dashboard.html) */
+.admin-header {
+    background-color: var(--primary-blue);
+    color: var(--text-light);
+    padding: 1rem 0;
+}
+
+.admin-header .admin-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.admin-header h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.5rem;
+    color: var(--secondary-gold);
+    margin: 0;
+}
+
+main.admin-container h2 {
+    color: var(--primary-blue);
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+/* Styles for the dynamically created table */
+#rsvp-container {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    overflow-x: auto; /* Allow horizontal scrolling on small screens */
+}
+
+.rsvp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.rsvp-table th,
+.rsvp-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.rsvp-table th {
+    background-color: #f4f7f6;
+    font-weight: 600;
+}
+
+.rsvp-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
