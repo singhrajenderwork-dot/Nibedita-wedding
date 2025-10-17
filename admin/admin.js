@@ -1,39 +1,63 @@
-/**
- * File: admin/admin.js
- * Description: Contains the JavaScript logic for the admin login and dashboard functionality.
- */
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Login Page Logic (index.html) ---
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
 
-// --- Login Page Logic (index.html) ---
-
-// Hardcoded credentials for the sample project
-const USER = "admin";
-const PASS = "wedding123";
-
-const loginForm = document.getElementById('login-form');
-const usernameInput = document.getElementById('username');
-const passwordInput = document.getElementById('password');
-const errorMsg = document.getElementById('login-error');
-
-// Check if the login form element exists before adding the event listener
-if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-        // Prevent the default form submission (which reloads the page)
-        e.preventDefault();
-
-        const enteredUsername = usernameInput.value.trim();
-        const enteredPassword = passwordInput.value.trim();
-
-        // Check credentials
-        if (enteredUsername === USER && enteredPassword === PASS) {
-            // Successful login!
-            errorMsg.textContent = ''; // Clear any previous error
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
             
-            // 1. Set a flag in session storage to remember the user is logged in
-            sessionStorage.setItem('loggedIn', 'true');
+            const username = loginForm.username.value;
+            const password = loginForm.password.value;
 
-            // 2. Redirect to the dashboard page
-            window.location.href = 'dashboard.html';
-        } else {
+            // Simple client-side validation (REPLACE with real API call in production)
+            if (username === 'admin' && password === '12345') {
+                // Store a token or flag to simulate a successful login
+                localStorage.setItem('isAuthenticated', 'true');
+                // Redirect to the dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                loginError.textContent = 'Invalid username or password.';
+                loginForm.password.value = ''; // Clear password field
+            }
+        });
+    }
+
+
+    // --- Dashboard Logic (dashboard.html) ---
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // 1. Check Authentication on Dashboard Load
+    if (document.body.classList.contains('admin-wrapper') || document.querySelector('.admin-wrapper')) {
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            // If not logged in, redirect them back to the login page
+            window.location.href = 'index.html';
+        }
+    }
+    
+    // 2. Logout functionality
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'index.html';
+        });
+    }
+
+    // 3. Simple Nav Item Highlighting
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // Optional: prevent default to stop page refresh if links are '#'
+            // e.preventDefault(); 
+            
+            navItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            
+            // In a real app, you would load different views/components here
+            console.log(`Mapsd to: ${item.querySelector('a').textContent.trim()}`);
+        });
+    });
+});
             // Failed login
             errorMsg.textContent = 'Invalid Username or Password.';
             errorMsg.style.color = 'red'; // Make the error stand out
