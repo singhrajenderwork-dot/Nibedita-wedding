@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    
     // --- Login Page Logic (index.html) ---
     const loginForm = document.getElementById('loginForm');
     const loginError = document.getElementById('loginError');
@@ -10,15 +11,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const username = loginForm.username.value;
             const password = loginForm.password.value;
 
-            // Simple client-side validation (REPLACE with real API call in production)
+            /*
+            ===================================================================
+            !!! SECURITY WARNING: CLIENT-SIDE LOGIN BELOW !!!
+            ===================================================================
+            
+            NEVER use this method for production. A real admin panel MUST
+            send the username/password to a secure server endpoint (via POST
+            request/fetch API) that hashes the password and verifies credentials 
+            in a database. The server should then return a JWT token or session 
+            cookie, which is the ONLY way to authenticate securely.
+            */
+            
+            // Current hardcoded check (for local development ONLY):
             if (username === 'admin' && password === '12345') {
-                // Store a token or flag to simulate a successful login
+                console.log("Login Success! Redirecting..."); 
+                
+                // Store a flag for simple client-side redirection check
                 localStorage.setItem('isAuthenticated', 'true');
+                
                 // Redirect to the dashboard
                 window.location.href = 'dashboard.html';
+                
             } else {
+                console.log("Login Failed.");
                 loginError.textContent = 'Invalid username or password.';
-                loginForm.password.value = ''; // Clear password field
+                loginForm.password.value = '';
             }
         });
     }
@@ -28,12 +46,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logoutBtn');
     
     // 1. Check Authentication on Dashboard Load
-    if (document.body.classList.contains('admin-wrapper') || document.querySelector('.admin-wrapper')) {
+    // This is also a basic client-side check. A real app should check the 
+    // validity of the session token/cookie with the server on every page load.
+    if (document.querySelector('.admin-wrapper')) {
         if (localStorage.getItem('isAuthenticated') !== 'true') {
-            // If not logged in, redirect them back to the login page
+            // Redirect them back to the login page if not "authenticated"
             window.location.href = 'index.html';
         }
     }
+    
+    // 2. Logout functionality
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            // In a real app, this would also make a request to the server 
+            // to invalidate the session/token.
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'index.html';
+        });
+    }
+
+    // 3. Simple Nav Item Highlighting
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // Optional: prevent default to stop page refresh if links are '#'
+            // e.preventDefault(); 
+            
+            navItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            
+            // In a real app, you would use this click to fetch data 
+            // for the corresponding view from your server's API.
+            console.log(`Mapsd to: ${item.querySelector('a').textContent.trim()}`);
+        });
+    });
+});
     
     // 2. Logout functionality
     if (logoutBtn) {
