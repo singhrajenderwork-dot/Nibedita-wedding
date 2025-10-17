@@ -11,14 +11,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const username = loginForm.username.value;
             const password = loginForm.password.value;
             
-            // 1. CRITICAL STEP: Clear any previous error message
-            loginError.textContent = ''; 
-            loginError.style.display = 'none'; // Ensure it's hidden initially or cleared
+            // --- DEBUG LOG: Check inputs ---
+            console.log(`Attempting login with: User=${username}, Pass=${password}`); 
 
-            // The hardcoded credentials are: username='admin', password='12345'
+            // 1. Clear any previous error message before checking
+            loginError.textContent = ''; 
+            loginError.style.display = 'none';
+
+            /*
+            !!! SECURITY WARNING: CLIENT-SIDE LOGIN BELOW !!!
+            This is ONLY for local development. A production application 
+            MUST use a server-side API to securely verify credentials.
+            */
             
+            // Current hardcoded check (for local development ONLY):
             if (username === 'admin' && password === '12345') {
-                console.log("Login Success! Redirecting to dashboard.html..."); 
+                // --- DEBUG LOG: Success ---
+                console.log("SUCCESS PATH: Credentials Matched. Redirecting..."); 
                 
                 localStorage.setItem('isAuthenticated', 'true');
                 
@@ -26,14 +35,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'dashboard.html';
                 
             } else {
-                // 2. THIS IS THE NEW ERROR DISPLAY BLOCK
-                console.log("Login Failed: Incorrect Credentials.");
+                // --- DEBUG LOG: Failure ---
+                console.log("FAILURE PATH: Credentials Mismatch."); 
                 
+                // Display the error message clearly
                 loginError.textContent = 'ERROR: Invalid username or password. Please try again.';
-                loginError.style.display = 'block'; // Make sure the error message is visible
+                loginError.style.display = 'block'; 
                 
                 loginForm.password.value = ''; // Clear password field for security
             }
+        });
+    }
+
+
+    // --- Dashboard Logic (dashboard.html) ---
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // 1. Check Authentication on Dashboard Load
+    if (document.querySelector('.admin-wrapper')) {
+        // If not logged in, redirect them back to the login page
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = 'index.html';
+        }
+    }
+    
+    // 2. Logout functionality
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            // Clear the local flag
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'index.html';
+        });
+    }
+
+    // 3. Simple Nav Item Highlighting
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // e.preventDefault(); 
+            
+            navItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            
+            // In a real app, this is where you load the content for the clicked link
+            console.log(`Mapsd to: ${item.querySelector('a').textContent.trim()}`);
+        });
+    });
+});
         });
     }
 
