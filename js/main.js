@@ -1,39 +1,129 @@
-// Wait for the DOM to be fully loaded before running any scripts
-document.addEventListener("DOMContentLoaded", () => {
+// --- Configuration ---
+// Wedding date is November 24, 2025 at 6:00 PM (18:00:00)
+const WEDDING_DATE = new Date('November 24, 2025 18:00:00').getTime();
+const COUNTDOWN_ELEMENT = document.getElementById('countdown');
+const RSVP_FORM = document.getElementById('rsvp-form');
+const RSVP_SUCCESS_MESSAGE = document.getElementById('rsvp-success');
 
-    /**
-     * 1. Countdown Timer
-     */
-    const countdown = () => {
-        // Set the wedding date (Year, Month (0-11), Day)
-        const weddingDate = new Date("December 15, 2025 11:00:00").getTime();
+// --- 1. Countdown Timer Logic ---
+function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = WEDDING_DATE - now;
 
-        // Update the timer every second
-        const interval = setInterval(() => {
-            const now = new Date().getTime();
-            const distance = weddingDate - now;
+    // Calculate time components
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // Calculate time
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    // Stop the countdown when the wedding date is reached
+    if (distance < 0) {
+        clearInterval(countdownInterval);
+        COUNTDOWN_ELEMENT.innerHTML = '<p class="date-location">The Day Is Here!</p>';
+        return;
+    }
 
-            // Display the result, adding a "0" if the number is less than 10
-            document.getElementById("days").innerText = days < 10 ? '0' + days : days;
-            document.getElementById("hours").innerText = hours < 10 ? '0' + hours : hours;
-            document.getElementById("minutes").innerText = minutes < 10 ? '0' + minutes : minutes;
-            document.getElementById("seconds").innerText = seconds < 10 ? '0' + seconds : seconds;
+    // Function to generate the HTML for a single countdown box
+    function getBoxHtml(number, label) {
+        return `
+            <div class="countdown-box">
+                <span class="countdown-number">${String(number).padStart(2, '0')}</span>
+                <span class="countdown-label">${label}</span>
+            </div>
+        `;
+    }
 
-            // If the countdown is over, display a message
-            if (distance < 0) {
-                clearInterval(interval);
-                document.getElementById("countdown-timer").innerHTML = "<div class='timer-box'>We're Married!</div>";
-            }
-        }, 1000);
-    };
-    countdown(); // Run the function
+    // Inject the HTML into the DOM
+    COUNTDOWN_ELEMENT.innerHTML = `
+        ${getBoxHtml(days, 'Days')}
+        ${getBoxHtml(hours, 'Hours')}
+        ${getBoxHtml(minutes, 'Minutes')}
+        ${getBoxHtml(seconds, 'Seconds')}
+    `;
 
+    // Subtle 'flip/fade' animation for numbers that change
+    // Since we re-render the whole HTML, the 'flip' transition is visually implied
+    // by the quick re-render and CSS transition on .countdown-number if the number changes.
+}
+
+// Initial call and set up the interval
+updateCountdown();
+const countdownInterval = setInterval(updateCountdown, 1000);
+
+// --- 2. Scroll Animation Logic (Global) ---
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        // Check if the element is intersecting (visible)
+        if (entry.isIntersecting) {
+            // Add the 'is-visible' class to trigger the CSS transition
+            entry.target.classList.add('is-visible');
+            // Stop observing once it's visible
+            observer.unobserve(entry.target);
+        }
+    });
+}, {
+    // Start the animation when the top of the element is 10% visible
+    threshold: 0.1
+});
+
+// Select all elements with the 'fade-in-section' class
+document.querySelectorAll('.fade-in-section').forEach(section => {
+    observer.observe(section);
+});
+
+// --- 3. Hero Text Animation on Load ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Select the main hero text elements
+    const heroTexts = document.querySelectorAll('.animate-on-load');
+
+    // Apply the final, visible state after a short delay
+    setTimeout(() => {
+        heroTexts.forEach((el, index) => {
+            // Apply a staggered transition for an elegant entrance
+            el.style.transition = `opacity 1s ease-out ${index * 0.3}s, transform 1s ease-out ${index * 0.3}s`;
+            el.style.opacity = 1;
+            el.style.transform = 'translateY(0)';
+        });
+    }, 100);
+});
+
+
+// --- 4. RSVP Form Submission Logic (Data to localStorage) ---
+
+if (RSVP_FORM) {
+    RSVP_FORM.addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        // 1. Get all form values
+        const newRsvp = {
+            id: Date.now(), // Unique ID for each submission
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            attending: document.getElementById('attending').value,
+            guests: document.getElementById('guests').value,
+            song: document.getElementById('song').value || 'N/A', // Handle optional field
+            timestamp: new Date().toLocaleString()
+        };
+
+        // 2 & 3. Retrieve existing RSVPs from localStorage
+        // || [] provides a fallback if the key doesn't exist
+        const rsvps = JSON.parse(localStorage.getItem('rsvpData')) || [];
+
+        // 4. Add the new RSVP object to the array
+        rsvps.push(newRsvp);
+
+        // 5. Save the updated array back to localStorage
+        localStorage.setItem('rsvpData', JSON.stringify(rsvps));
+
+        // 6. Show success message and reset form
+        RSVP_FORM.style.display = 'none';
+        RSVP_SUCCESS_MESSAGE.style.display = 'block';
+
+        // Optional: Log the saved data to console for confirmation
+        console.log("RSVP Submitted Successfully:", newRsvp);
+        console.log("Current total RSVPs in localStorage:", rsvps);
+    });
+}
 
     /**
      * 2. Sticky Navigation
