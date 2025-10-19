@@ -3,37 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Priya & Rohan are Getting Married!</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <title>Nibedita & Anandamoy - Wedding Invitation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <nav id="sticky-nav" class="sticky-nav">
-        <div class="container">
-            <a href="#home" class="nav-logo heading-font">P & R</a>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#story">Our Story</a></li>
-                <li><a href="#events">Events</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#rsvp">RSVP</a></li>
-            </ul>
-        </div>
+    <nav>
+        <div class="nav-brand">N & A</div>
+        <ul>
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#story" class="nav-link">Our Story</a></li>
+            <li><a href="#details" class="nav-link">Details</a></li>
+            <li><a href="#gallery" class="nav-link">Gallery</a></li>
+            <li><a href="#rsvp" class="nav-link">RSVP</a></li>
+        </ul>
     </nav>
 
-    <section id="home" class="hero-section">
-        <div class="hero-overlay"></div>
+    <header id="home" class="hero-section">
         <div class="hero-content">
-            <h2 class="animate-load-in">We are getting married!</h2>
-            <h1 class="heading-font animate-load-in">Priya & Rohan</h1>
-            <p class="animate-load-in">December 15, 2025</p>
+            <h1 class="animate-on-load">Nibedita & Anandamoy</h1>
+            <p class="animate-on-load-sub">We are getting married!</p>
+            <div id="countdown" class="countdown-timer">
+                </div>
+            <p class="date-location">24 November 2025 | Kolkata, India</p>
+        </div>
+    </header>
+
+    <section id="story" class="content-section fade-in-section">
+        <h2 class="section-title">Our Journey</h2>
+        <div class="story-container">
+            <div class="story-image">
+                <img src="images/couple-photo.jpg" alt="Nibedita and Anandamoy">
+            </div>
+            <div class="story-text">
+                <h3>A Traditional Romance</h3>
+                <p>From the moment our families introduced us, the stars aligned. Our journey has been a beautiful blend of tradition, respect, and deep, abiding love. We are thrilled to take the next step and celebrate our union in a grand ceremony, inviting all of you to share in our joy.</p>
+                <p>This wedding is a homage to our heritage, a royal affair that marks the beginning of our forever.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="details" class="content-section fade-in-section details-section">
+        <h2 class="section-title">The Grand Details</h2>
+        <div class="details-grid">
+            <div class="detail-card">
+                <i class="fas fa-ring"></i>
+                <h3>The Ceremony</h3>
+                <p>Date: Monday, November 24, 2025</p>
+                <p>Time: 6:00 PM onwards</p>
+                <p>Venue: The Royal Palace Grounds, Kolkata</p>
+            </div>
+            <div class="detail-card">
+                <i class="fas fa-drum"></i>
+                <h3>The Sangeet</h3>
+                <p>Date: Sunday, November 23, 2025</p>
+                <p>Time: 7:30 PM</p>
+                <p>Venue: Ballroom A</p>
+            </div>
+            <div class="detail-card">
+                <i class="fas fa-gift"></i>
+                <h3>Gifts & Blessings</h3>
+                <p>Your presence is the only gift we ask for. However, if you insist, a contribution to our future home is welcome.</p>
+            </div>
+        </div>
+        <a href="#" class="btn primary-btn">View Map</a>
+    </section>
+
+    <section id="gallery" class="content-section fade-in-section gallery-section">
+        <h2 class="section-title">Moments of Joy</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="images/gallery-1.jpg" alt="Gallery Photo 1"></div>
+            <div class="gallery-item"><img src="images/gallery-2.jpg" alt="Gallery Photo 2"></div>
+            <div class="gallery-item"><img src="images/gallery-3.jpg" alt="Gallery Photo 3"></div>
+            <div class="gallery-item"><img src="images/gallery-4.jpg" alt="Gallery Photo 4"></div>
+        </div>
+    </section>
+
+    <section id="rsvp" class="content-section fade-in-section rsvp-section">
+        <h2 class="section-title">RSVP</h2>
+        <p class="rsvp-subtext">Kindly respond by October 24, 2025.</p>
+
+        <form id="rsvp-form" class="rsvp-form">
+            <div class="form-group">
+                <label for="name">Your Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="attending">Will you be attending?</label>
+                <select id="attending" name="attending" required>
+                    <option value="">-- Select an option --</option>
+                    <option value="Yes">Joyfully Accepting</option>
+                    <option value="No">Regretfully Declining</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="guests">Number of Guests (Including Yourself)</label>
+                <input type="number" id="guests" name="guests" min="1" max="6" value="1" required>
+            </div>
+            <div class="form-group">
+                <label for="song">Favorite Song Request (Optional)</label>
+                <input type="text" id="song" name="song">
+            </div>
+
+            <button type="submit" class="btn primary-btn submit-btn">Submit RSVP</button>
+            <div id="rsvp-success" class="success-message" style="display: none;">Thank you for your response! We can't wait to celebrate with you.</div>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Nibedita & Anandamoy Wedding. Created with Love.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
 
             <div id="countdown-timer" class="countdown-timer animate-load-in">
                 <div class="timer-box">
